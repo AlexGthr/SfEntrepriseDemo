@@ -12,8 +12,33 @@
         Adresse : {{ entreprise.adresseComplete}}
     </p>
     <p>
-        Date de création : {{ entreprise.dateCreation }}
+        Date de création : {{ entreprise.dateCreation|date("d/m/Y") }}
     </p>
+
+    <h3>Liste des salariés</h3>
+
+    {% if entreprise.employes | length > 0 %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Employes</th>
+                </tr>
+            </thead>
+            <tbody>
+
+
+            {% for employe in entreprise.employes %}
+
+       <tr><td> <a href="{{ path('show_employe', {'id':employe.id}) }}"> {{ employe }} </a> </td><tr>
+        
+    {% endfor %}
+
+</tbody>
+</table>
+
+    {% else %}
+        <p> Aucun employés dans l'entreprise</p>
+    {% endif %}
 
 
 {% endblock %}
