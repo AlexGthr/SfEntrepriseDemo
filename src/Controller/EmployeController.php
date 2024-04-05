@@ -13,20 +13,29 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class EmployeController extends AbstractController
 {
+        // On défini une route pour l'accès à la method
     #[Route('/employe', name: 'app_employe')]
     public function index(EmployeRepository $employesRepository): Response
     {
+        // On recupère les employes pour les afficher
         $employes = $employesRepository->findBy([], ['nom' => 'ASC']);
+
         return $this->render('employe/index.html.twig', [
             'employes' => $employes
         ]);
     }
 
+        // Pour un formulaire, on peux utiliser la même method pour AJOUTER ou EDIT un objet
     #[Route('/employe/new', name: 'new_employe')]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response 
+    #[Route('/employe/{id}/edit', name: 'edit_employe')]
+    public function new(Employe $employe = null, Request $request, EntityManagerInterface $entityManager): Response 
     {
-        $employe = new Employe();
+        // Si il n'y a pas d'employé, alors on crée un nouveau
+        if (!$employe) {
+            $employe = new Employe();
+        }
         
+        // On crée le formulaire
         $form = $this->createForm(EmployeType::class, $employe);
 
         $form->handleRequest($request);
@@ -48,10 +57,24 @@ class EmployeController extends AbstractController
         }
         
         return $this->render('employe/new.html.twig', [
-            'formAddEmploye' => $form
+            'formAddEmploye' => $form,
+            'edit' => $employe->getId()
         ]);
     }
 
+    // Method pour supprimer un employé
+    #[Route('/employe/{id}/delete', name: 'delete_employe')]
+    public function delete(Employe $employe, EntityManagerInterface $entityManager)
+    {
+        // Permet la suppression d'un employé (delete from)
+        $entityManager->remove($employe);
+        $entityManager->flush();
+
+        // Puis on redirige l'user vers la liste des entreprises
+        return $this->redirectToRoute('app_employe');
+    }
+
+    // Method pour afficher le detail d'un employé
     #[Route('/employe/{id}', name: 'show_employe')]
     public function show(Employe $employe): Response 
     {

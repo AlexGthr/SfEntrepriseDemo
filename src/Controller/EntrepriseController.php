@@ -13,22 +13,30 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class EntrepriseController extends AbstractController
 {
+
+    // Method pour afficher la liste des entreprises
     #[Route('/entreprise', name: 'app_entreprise')]
     public function index(EntrepriseRepository $entrepriseRepository): Response
     {
-
+        // On récupère la liste des entreprises
         $entreprises = $entrepriseRepository->findBy([], ['raisonSociale' => 'ASC']);
+
         return $this->render('entreprise/index.html.twig', [
             'entreprises' => $entreprises
         ]);
     }
 
-    
+    // Method pour AJOUTER ou EDIT une entreprise
     #[Route('/entreprise/new', name: 'new_entreprise')]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response 
+    #[Route('/entreprise/{id}/edit', name: 'edit_entreprise')]
+    public function new_edit(Entreprise $entreprise = null, Request $request, EntityManagerInterface $entityManager): Response 
     {
-        // On crée un nouvel objet Entreprise
-        $entreprise = new Entreprise();
+        // Si il n'y a pas d'entreprise,
+        if (!$entreprise) {
+            // On crée un nouvel objet Entreprise
+            $entreprise = new Entreprise();
+        }
+
 
         // On crée le formulaire pour l'entreprise
         $form = $this->createForm(EntrepriseType::class, $entreprise);
@@ -52,10 +60,24 @@ class EntrepriseController extends AbstractController
         }
         
         return $this->render('entreprise/new.html.twig', [
-            'formAddEntreprise' => $form
+            'formAddEntreprise' => $form,
+            'edit' => $entreprise->getId()
         ]);
     }
+
+    // Method pour delete une entreprise
+    #[Route('/entreprise/{id}/delete', name: 'delete_entreprise')]
+    public function delete(Entreprise $entreprise, EntityManagerInterface $entityManager)
+    {
+        // Permet la suppression de l'entreprise (delete from)
+        $entityManager->remove($entreprise);
+        $entityManager->flush();
+
+        // Puis on redirige l'user vers la liste des entreprises
+        return $this->redirectToRoute('app_entreprise');
+    }
     
+    // Method pour afficher le detail d'une entreprise
     #[Route('/entreprise/{id}', name: 'show_entreprise')]
     public function show(Entreprise $entreprise): Response 
     {

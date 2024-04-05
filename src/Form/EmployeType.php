@@ -14,6 +14,8 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 class EmployeType extends AbstractType
 {
+
+        // Formulaire
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -40,6 +42,7 @@ class EmployeType extends AbstractType
             ]
             ], DateType::class)
             ->add('ville', TextType::class, [
+                'required' => false,
                 'attr' => [
                     'class' => 'form-control'
                 ] 
@@ -51,7 +54,7 @@ class EmployeType extends AbstractType
                     'class' => 'form-control'
                 ] 
             ])
-            ->add('Valider', SubmitType::class, [
+            ->add('valider', SubmitType::class, [
                 'attr' => [
                     'class' => 'btn btn-success'
                 ] 

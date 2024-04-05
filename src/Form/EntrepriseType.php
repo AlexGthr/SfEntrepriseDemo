@@ -13,6 +13,8 @@ class EntrepriseType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+
+            // Formulaire
         $builder
             ->add('raisonSociale', TextType::class, [
                 'attr' => [
@@ -45,7 +47,7 @@ class EntrepriseType extends AbstractType
                 ] 
             ])
 
-            ->add('Valider', SubmitType::class, [
+            ->add('valider', SubmitType::class, [
                 'attr' => [
                     'class' => 'btn btn-success'
                 ] 
