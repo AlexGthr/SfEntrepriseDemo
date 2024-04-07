@@ -19,6 +19,18 @@
                 <li><a href="{{ path('app_employe') }}">Liste Employés</a></li>
                 <li><a href="{{ path('new_entreprise') }}">Ajouter entreprise</a></li>
                 <li><a href="{{ path('new_employe') }}">Ajouter employe</a></li>
+
+                {% if app.user %}
+                    <a href="{{ path('app_logout') }}">Se déconnecter</a>
+                    <a href="">Mon profil</a>
+                {% else %}
+                    <a href="{{ path('app_login') }}">Se connecter</a>
+                    <a href="{{ path('app_register') }}">S'enrengistrer</a>
+                {% endif %}
+
+                {% if is_granted("ROLE_ADMIN") %}
+                    <a href="">Panel Admin</a>
+                {% endif %}
             </ul>
         </nav>
 
